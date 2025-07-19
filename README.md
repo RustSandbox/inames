@@ -1,3 +1,7 @@
+<div align="center">
+  <img src="logo.png" alt="iNames Logo" width="200" height="200">
+</div>
+
 # iNames - Inclusive Multicultural Names Generator
 
 [![CI](https://github.com/RustSandbox/inames/actions/workflows/ci.yml/badge.svg)](https://github.com/RustSandbox/inames/actions/workflows/ci.yml)
