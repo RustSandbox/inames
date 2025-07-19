@@ -30,13 +30,6 @@ dalil-fatima-8472
 
 ## Installation
 
-### Using Homebrew (macOS and Linux)
-
-```bash
-brew tap RustSandbox/tap
-brew install inames
-```
-
 ### Using Cargo
 
 ```bash
