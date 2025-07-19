@@ -1,6 +1,6 @@
+use rand::Rng;
 use rand::seq::SliceRandom;
 use rand::thread_rng;
-use rand::Rng;
 
 const ADJECTIVES: &[&str] = &include!(concat!(env!("OUT_DIR"), "/adjectives.rs"));
 const NOUNS: &[&str] = &include!(concat!(env!("OUT_DIR"), "/nouns.rs"));

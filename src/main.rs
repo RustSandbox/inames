@@ -19,15 +19,15 @@ struct Cli {
 
 fn main() {
     let cli = Cli::parse();
-    
+
     let naming = if cli.number {
         Name::Numbered
     } else {
         Name::Plain
     };
-    
+
     let mut generator = Generator::with_naming(naming);
-    
+
     for _ in 0..cli.amount {
         if let Some(name) = generator.next() {
             println!("{}", name);
