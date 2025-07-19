@@ -1,0 +1,5 @@
+[editor]
+auto-format = true
+
+[language.rust]
+formatter = { command = "rustfmt" }
