@@ -19,7 +19,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Library interface for custom integrations
 - GitHub Actions for CI/CD
 - Automated release process with binaries for Linux, macOS (Intel & ARM), and Windows
-- Homebrew formula generation
 
 ### Changed
 - Extended the concept from [fnichol/names](https://github.com/fnichol/names) to be more multicultural and inclusive as iNames
