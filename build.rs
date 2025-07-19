@@ -35,7 +35,7 @@ fn process_word_list(input_path: &Path, output_path: &Path) {
             if !first {
                 write!(&mut output, ", ").unwrap();
             }
-            write!(&mut output, "\"{}\"", word).unwrap();
+            write!(&mut output, "\"{word}\"").unwrap();
             first = false;
         }
     }

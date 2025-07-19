@@ -29,8 +29,8 @@ fn main() {
     let mut generator = Generator::with_naming(naming);
 
     for _ in 0..cli.amount {
-        if let Some(name) = generator.next() {
-            println!("{}", name);
+        if let Some(name) = generator.generate() {
+            println!("{name}");
         }
     }
 }

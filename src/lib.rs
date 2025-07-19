@@ -38,15 +38,15 @@ impl<'a> Generator<'a> {
         Generator::new(ADJECTIVES, NOUNS, naming)
     }
 
-    pub fn next(&mut self) -> Option<String> {
+    pub fn generate(&mut self) -> Option<String> {
         let adj = self.adjectives.choose(&mut self.rng)?;
         let noun = self.nouns.choose(&mut self.rng)?;
 
         Some(match self.naming {
-            Name::Plain => format!("{}-{}", adj, noun),
+            Name::Plain => format!("{adj}-{noun}"),
             Name::Numbered => {
                 let num: u16 = self.rng.gen_range(0..10000);
-                format!("{}-{}-{:04}", adj, noun, num)
+                format!("{adj}-{noun}-{num:04}")
             }
         })
     }
@@ -56,7 +56,7 @@ impl<'a> Iterator for Generator<'a> {
     type Item = String;
 
     fn next(&mut self) -> Option<String> {
-        self.next()
+        self.generate()
     }
 }
 
@@ -75,7 +75,7 @@ mod tests {
     #[test]
     fn test_default_generator() {
         let mut generator = Generator::default();
-        let name = generator.next().unwrap();
+        let name = generator.generate().unwrap();
         assert!(name.contains('-'));
         let parts: Vec<&str> = name.split('-').collect();
         assert_eq!(parts.len(), 2);
@@ -84,7 +84,7 @@ mod tests {
     #[test]
     fn test_numbered_generator() {
         let mut generator = Generator::with_naming(Name::Numbered);
-        let name = generator.next().unwrap();
+        let name = generator.generate().unwrap();
         let parts: Vec<&str> = name.split('-').collect();
         assert_eq!(parts.len(), 3);
         assert_eq!(parts[2].len(), 4);
@@ -96,7 +96,7 @@ mod tests {
         let adjectives = &["test"];
         let nouns = &["name"];
         let mut generator = Generator::new(adjectives, nouns, Name::Plain);
-        let name = generator.next().unwrap();
+        let name = generator.generate().unwrap();
         assert_eq!(name, "test-name");
     }
 }
