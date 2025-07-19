@@ -1,72 +1,123 @@
-# 🦀 Hamze's Ultimate Rust Project Template
+# Multicultural Names Generator
 
-> ⚙️ A fully automated Rust project starter with:
->
-> * `cargo-generate` scaffolding
-> * Clippy + fmt + tests + CI
-> * `justfile` command runner
-> * Docker build/run
-> * GitHub private repo creation
-> * ADHD-friendly automation 🧠
->
-> *Template created by **Remolab***
+[![CI](https://github.com/hamzeghalebi/names/actions/workflows/ci.yml/badge.svg)](https://github.com/hamzeghalebi/names/actions/workflows/ci.yml)
+[![Crates.io](https://img.shields.io/crates/v/names.svg)](https://crates.io/crates/names)
+[![License](https://img.shields.io/badge/license-MIT%2FApache--2.0-blue.svg)](LICENSE-MIT)
 
-## 🔧 What's Included
+A random name generator for Rust that creates unique names using Persian, Arabic, and Asian names written in Latin characters. 
 
-| Feature                        | Status |
-| ------------------------------ | ------ |
-| Cargo project scaffolding      | ✅      |
-| Linting + formatting           | ✅      |
-| GitHub Actions CI              | ✅      |
-| GitHub repo auto-create        | ✅      |
-| Docker support                 | ✅      |
-| `just` automation runner       | ✅      |
-| Editor configs (VSCode, Helix) | ✅      |
+Inspired by [fnichol/names](https://github.com/fnichol/names), this project extends the concept to include multicultural names from around the world, making it more inclusive and diverse while maintaining the same simple and effective API.
 
-## 📁 File Structure
+## Examples
 
-```text
-my-rust-template/
-├── .github/workflows/ci.yml
-├── .gitignore
-├── .editorconfig
-├── .vscode/settings.json
-├── helix/config.toml
-├── clippy.toml
-├── rustfmt.toml
-├── cargo-generate.toml
-├── justfile
-├── Dockerfile
-├── docker-compose.yml (optional)
-├── post_gen.sh
-├── README.md
-├── src/main.rs
-└── Cargo.toml
+```
+aziz-hamze
+sakura-krishna
+rumi-chen-1234
+dalil-fatima-8472
 ```
 
-## ✅ Summary
+## Features
 
-| Task                        | Command             |
-| --------------------------- | ------------------- |
-| Create project              | `rust-new my-app`   |
-| Run app                     | `just run`          |
-| Run all checks              | `just check`        |
-| Build Docker image          | `just docker-build` |
-| Run app in Docker           | `just docker-run`   |
-| Push to GitHub private repo | `./post_gen.sh`     |
+- Generates random combinations of multicultural names
+- All names are written in Latin/English characters
+- Optional 4-digit number suffix
+- Includes names from:
+  - Persian/Iranian culture
+  - Arabic culture
+  - East Asian cultures (Chinese, Japanese)
+  - South Asian cultures (Indian, Buddhist)
 
-## 🚀 Getting Started
+## Installation
 
-1. Install dependencies:
+### Using Homebrew (macOS and Linux)
+
 ```bash
-cargo install cargo-generate
-cargo install just
-gh auth login
+brew tap hamzeghalebi/tap
+brew install names
 ```
 
-2. Create a new project:
+### Using Cargo
+
 ```bash
-cargo generate --git https://github.com/yourname/rust-starter-template.git --name my-cli-tool
-cd my-cli-tool
-./post_gen.sh
-``` 
+cargo install names
+```
+
+### Pre-built Binaries
+
+Download pre-built binaries from the [releases page](https://github.com/hamzeghalebi/names/releases).
+
+### From Source
+
+```bash
+git clone https://github.com/hamzeghalebi/names.git
+cd names
+cargo build --release
+cargo install --path .
+```
+
+## Usage
+
+### Command Line
+
+Generate a single name:
+```bash
+names
+```
+
+Generate multiple names:
+```bash
+names --amount 5
+```
+
+Generate names with numbers:
+```bash
+names --number
+names --number --amount 10
+```
+
+### As a Library
+
+```rust
+use names::{Generator, Name};
+
+fn main() {
+    // Default generator
+    let mut generator = Generator::default();
+    println!("{}", generator.next().unwrap());
+    
+    // With numbers
+    let mut generator = Generator::with_naming(Name::Numbered);
+    println!("{}", generator.next().unwrap());
+    
+    // Custom word lists
+    let adjectives = &["aziz", "sakura", "rumi"];
+    let nouns = &["hamze", "krishna", "chen"];
+    let mut generator = Generator::new(adjectives, nouns, Name::Plain);
+    println!("{}", generator.next().unwrap());
+}
+```
+
+## Name Sources
+
+The name lists include carefully selected names from:
+- Persian names (both modern and classical)
+- Arabic names (transliterated to Latin script)
+- Japanese names
+- Chinese names
+- Indian names
+- Buddhist/Sanskrit terms
+
+All names are respectfully chosen and transliterated to be easily readable in Latin characters.
+
+## Development
+
+Use `just` to see available development commands:
+
+```bash
+just --list
+```
+
+## License
+
+MIT OR Apache-2.0

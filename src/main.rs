@@ -1,49 +1,36 @@
-// ╭─────────────────────────────────────╮
-// │  Template created by Remolab       │
-// ╰─────────────────────────────────────╯
-
 use clap::Parser;
+use names::{Generator, Name};
 
-/// 🦀 Remolab Rust Template
+/// Multicultural random name generator
 ///
-/// This is a template project - you need to modify it for your specific use case.
-/// Replace this CLI with your actual application logic.
+/// Generates random names using Persian, Arabic, and Asian names written in Latin characters.
+/// Examples: "aziz-hamze", "sakura-krishna", "rumi-chen-1234"
 #[derive(Parser)]
-#[command(name = "names", version, about)]
+#[command(name = "names", version, about, long_about = None)]
 struct Cli {
-    #[arg(short, long, action = clap::ArgAction::Count)]
-    verbose: u8,
+    /// Add a random 4-digit number to the generated name
+    #[arg(short, long)]
+    number: bool,
+
+    /// Number of names to generate
+    #[arg(short, long, default_value = "1")]
+    amount: usize,
 }
 
 fn main() {
     let cli = Cli::parse();
-    env_logger::init();
-
-    // Template message - replace this with your actual application logic
-    println!("🦀 This is a Remolab Rust Template!");
-    println!();
-    println!("📝 You need to modify this template for your specific use case:");
-    println!("   • Replace this main.rs with your application logic");
-    println!("   • Update Cargo.toml dependencies as needed");
-    println!("   • Modify the CLI structure in the Cli struct above");
-    println!("   • Add your business logic and features");
-    println!();
-    println!("🚀 Template features included:");
-    println!("   ✅ Async runtime (tokio)");
-    println!("   ✅ CLI framework (clap)");
-    println!("   ✅ Error handling (anyhow)");
-    println!("   ✅ Serialization (serde)");
-    println!("   ✅ AI/LLM support (rig-core)");
-    println!("   ✅ Schema generation (schemars)");
-    println!("   ✅ Structured logging (tracing)");
-    println!("   ✅ Docker support");
-    println!("   ✅ CI/CD pipeline");
-    println!("   ✅ Development automation (just)");
-    println!();
-    println!("📚 Use 'just --list' to see available development commands");
-
-    if cli.verbose > 0 {
-        log::info!("Verbosity level: {}", cli.verbose);
-        println!("🔧 Verbose mode enabled (level: {})", cli.verbose);
+    
+    let naming = if cli.number {
+        Name::Numbered
+    } else {
+        Name::Plain
+    };
+    
+    let mut generator = Generator::with_naming(naming);
+    
+    for _ in 0..cli.amount {
+        if let Some(name) = generator.next() {
+            println!("{}", name);
+        }
     }
 }

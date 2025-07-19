@@ -1,0 +1,192 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  create-release:
+    name: Create Release
+    runs-on: ubuntu-latest
+    outputs:
+      upload_url: ${{ steps.release.outputs.upload_url }}
+      release_version: ${{ env.RELEASE_VERSION }}
+    steps:
+      - name: Get the release version from the tag
+        shell: bash
+        run: |
+          echo "RELEASE_VERSION=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
+          echo "version is: ${{ env.RELEASE_VERSION }}"
+      
+      - name: Create GitHub release
+        id: release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ env.RELEASE_VERSION }}
+          release_name: ${{ env.RELEASE_VERSION }}
+          draft: false
+          prerelease: false
+
+  build-release:
+    name: Build Release
+    needs: ['create-release']
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        build: 
+          - linux
+          - macos
+          - macos-arm
+          - windows
+        include:
+          - build: linux
+            os: ubuntu-latest
+            rust: stable
+            target: x86_64-unknown-linux-gnu
+            archive: tar.gz
+            archive-command: tar czf
+          - build: macos
+            os: macos-latest
+            rust: stable
+            target: x86_64-apple-darwin
+            archive: tar.gz
+            archive-command: tar czf
+          - build: macos-arm
+            os: macos-latest
+            rust: stable
+            target: aarch64-apple-darwin
+            archive: tar.gz
+            archive-command: tar czf
+          - build: windows
+            os: windows-latest
+            rust: stable
+            target: x86_64-pc-windows-msvc
+            archive: zip
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@master
+        with:
+          toolchain: ${{ matrix.rust }}
+          targets: ${{ matrix.target }}
+
+      - name: Build release binary
+        run: cargo build --verbose --release --target ${{ matrix.target }}
+
+      - name: Strip release binary (unix)
+        if: matrix.os != 'windows-latest'
+        run: strip "target/${{ matrix.target }}/release/names"
+
+      - name: Build archive
+        shell: bash
+        run: |
+          staging="names-${{ needs.create-release.outputs.release_version }}-${{ matrix.target }}"
+          mkdir -p "$staging"
+
+          cp {README.md,LICENSE-MIT,LICENSE-APACHE,CHANGELOG.md} "$staging/"
+
+          if [ "${{ matrix.os }}" = "windows-latest" ]; then
+            cp "target/${{ matrix.target }}/release/names.exe" "$staging/"
+            7z a "$staging.zip" "$staging"
+            echo "ASSET=$staging.zip" >> $GITHUB_ENV
+          else
+            cp "target/${{ matrix.target }}/release/names" "$staging/"
+            tar czf "$staging.tar.gz" "$staging"
+            echo "ASSET=$staging.tar.gz" >> $GITHUB_ENV
+          fi
+
+      - name: Upload release archive
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ needs.create-release.outputs.upload_url }}
+          asset_path: ${{ env.ASSET }}
+          asset_name: ${{ env.ASSET }}
+          asset_content_type: application/octet-stream
+
+  publish-cargo:
+    name: Publish to crates.io
+    runs-on: ubuntu-latest
+    needs: ['build-release']
+    steps:
+      - uses: actions/checkout@v3
+      - uses: dtolnay/rust-toolchain@stable
+      - run: cargo publish
+        env:
+          CARGO_REGISTRY_TOKEN: ${{ secrets.CARGO_REGISTRY_TOKEN }}
+
+  update-homebrew:
+    name: Update Homebrew Formula
+    runs-on: ubuntu-latest
+    needs: ['create-release', 'build-release']
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Update Homebrew Formula
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          HOMEBREW_TAP_TOKEN: ${{ secrets.HOMEBREW_TAP_TOKEN }}
+        run: |
+          VERSION="${{ needs.create-release.outputs.release_version }}"
+          VERSION="${VERSION#v}"  # Remove 'v' prefix
+          
+          # Download the release assets to calculate SHA256
+          curl -L -o names-darwin.tar.gz \
+            "https://github.com/${{ github.repository }}/releases/download/v${VERSION}/names-v${VERSION}-x86_64-apple-darwin.tar.gz"
+          curl -L -o names-darwin-arm.tar.gz \
+            "https://github.com/${{ github.repository }}/releases/download/v${VERSION}/names-v${VERSION}-aarch64-apple-darwin.tar.gz"
+          curl -L -o names-linux.tar.gz \
+            "https://github.com/${{ github.repository }}/releases/download/v${VERSION}/names-v${VERSION}-x86_64-unknown-linux-gnu.tar.gz"
+          
+          # Calculate SHA256
+          SHA_DARWIN=$(sha256sum names-darwin.tar.gz | cut -d' ' -f1)
+          SHA_DARWIN_ARM=$(sha256sum names-darwin-arm.tar.gz | cut -d' ' -f1)
+          SHA_LINUX=$(sha256sum names-linux.tar.gz | cut -d' ' -f1)
+          
+          # Create formula file
+          cat > names.rb << EOF
+          class Names < Formula
+            desc "Multicultural random name generator with Persian, Arabic, and Asian names"
+            homepage "https://github.com/${{ github.repository }}"
+            version "${VERSION}"
+            license any_of: ["MIT", "Apache-2.0"]
+          
+            on_macos do
+              if Hardware::CPU.arm?
+                url "https://github.com/${{ github.repository }}/releases/download/v${VERSION}/names-v${VERSION}-aarch64-apple-darwin.tar.gz"
+                sha256 "${SHA_DARWIN_ARM}"
+              else
+                url "https://github.com/${{ github.repository }}/releases/download/v${VERSION}/names-v${VERSION}-x86_64-apple-darwin.tar.gz"
+                sha256 "${SHA_DARWIN}"
+              end
+            end
+          
+            on_linux do
+              url "https://github.com/${{ github.repository }}/releases/download/v${VERSION}/names-v${VERSION}-x86_64-unknown-linux-gnu.tar.gz"
+              sha256 "${SHA_LINUX}"
+            end
+          
+            def install
+              bin.install "names"
+            end
+          
+            test do
+              assert_match(/\w+-\w+/, shell_output("#{bin}/names"))
+            end
+          end
+          EOF
+          
+          # If you have a separate homebrew tap repository, you can push to it
+          # For now, we'll just create the formula file
+          echo "Homebrew formula created successfully"
