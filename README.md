@@ -1,6 +1,6 @@
 # iNames - Inclusive Multicultural Names Generator
 
-[![CI](https://github.com/hamzeghalebi/inames/actions/workflows/ci.yml/badge.svg)](https://github.com/hamzeghalebi/inames/actions/workflows/ci.yml)
+[![CI](https://github.com/RustSandbox/inames/actions/workflows/ci.yml/badge.svg)](https://github.com/RustSandbox/inames/actions/workflows/ci.yml)
 [![Crates.io](https://img.shields.io/crates/v/inames.svg)](https://crates.io/crates/inames)
 [![License](https://img.shields.io/badge/license-MIT%2FApache--2.0-blue.svg)](LICENSE-MIT)
 
@@ -33,7 +33,7 @@ dalil-fatima-8472
 ### Using Homebrew (macOS and Linux)
 
 ```bash
-brew tap hamzeghalebi/tap
+brew tap RustSandbox/tap
 brew install inames
 ```
 
@@ -45,12 +45,12 @@ cargo install inames
 
 ### Pre-built Binaries
 
-Download pre-built binaries from the [releases page](https://github.com/hamzeghalebi/inames/releases).
+Download pre-built binaries from the [releases page](https://github.com/RustSandbox/inames/releases).
 
 ### From Source
 
 ```bash
-git clone https://github.com/hamzeghalebi/inames.git
+git clone https://github.com/RustSandbox/inames.git
 cd inames
 cargo build --release
 cargo install --path .
@@ -84,17 +84,17 @@ use inames::{Generator, Name};
 fn main() {
     // Default generator
     let mut generator = Generator::default();
-    println!("{}", generator.next().unwrap());
+    println!("{}", generator.generate().unwrap());
     
     // With numbers
     let mut generator = Generator::with_naming(Name::Numbered);
-    println!("{}", generator.next().unwrap());
+    println!("{}", generator.generate().unwrap());
     
     // Custom word lists
     let adjectives = &["aziz", "sakura", "rumi"];
     let nouns = &["hamze", "krishna", "chen"];
     let mut generator = Generator::new(adjectives, nouns, Name::Plain);
-    println!("{}", generator.next().unwrap());
+    println!("{}", generator.generate().unwrap());
 }
 ```
 
