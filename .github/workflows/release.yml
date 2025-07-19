@@ -84,22 +84,22 @@ jobs:
 
       - name: Strip release binary (unix)
         if: matrix.os != 'windows-latest'
-        run: strip "target/${{ matrix.target }}/release/names"
+        run: strip "target/${{ matrix.target }}/release/inames"
 
       - name: Build archive
         shell: bash
         run: |
-          staging="names-${{ needs.create-release.outputs.release_version }}-${{ matrix.target }}"
+          staging="inames-${{ needs.create-release.outputs.release_version }}-${{ matrix.target }}"
           mkdir -p "$staging"
 
           cp {README.md,LICENSE-MIT,LICENSE-APACHE,CHANGELOG.md} "$staging/"
 
           if [ "${{ matrix.os }}" = "windows-latest" ]; then
-            cp "target/${{ matrix.target }}/release/names.exe" "$staging/"
+            cp "target/${{ matrix.target }}/release/inames.exe" "$staging/"
             7z a "$staging.zip" "$staging"
             echo "ASSET=$staging.zip" >> $GITHUB_ENV
           else
-            cp "target/${{ matrix.target }}/release/names" "$staging/"
+            cp "target/${{ matrix.target }}/release/inames" "$staging/"
             tar czf "$staging.tar.gz" "$staging"
             echo "ASSET=$staging.tar.gz" >> $GITHUB_ENV
           fi
@@ -142,47 +142,47 @@ jobs:
           VERSION="${VERSION#v}"  # Remove 'v' prefix
           
           # Download the release assets to calculate SHA256
-          curl -L -o names-darwin.tar.gz \
-            "https://github.com/${{ github.repository }}/releases/download/v${VERSION}/names-v${VERSION}-x86_64-apple-darwin.tar.gz"
-          curl -L -o names-darwin-arm.tar.gz \
-            "https://github.com/${{ github.repository }}/releases/download/v${VERSION}/names-v${VERSION}-aarch64-apple-darwin.tar.gz"
-          curl -L -o names-linux.tar.gz \
-            "https://github.com/${{ github.repository }}/releases/download/v${VERSION}/names-v${VERSION}-x86_64-unknown-linux-gnu.tar.gz"
+          curl -L -o inames-darwin.tar.gz \
+            "https://github.com/${{ github.repository }}/releases/download/v${VERSION}/inames-v${VERSION}-x86_64-apple-darwin.tar.gz"
+          curl -L -o inames-darwin-arm.tar.gz \
+            "https://github.com/${{ github.repository }}/releases/download/v${VERSION}/inames-v${VERSION}-aarch64-apple-darwin.tar.gz"
+          curl -L -o inames-linux.tar.gz \
+            "https://github.com/${{ github.repository }}/releases/download/v${VERSION}/inames-v${VERSION}-x86_64-unknown-linux-gnu.tar.gz"
           
           # Calculate SHA256
-          SHA_DARWIN=$(sha256sum names-darwin.tar.gz | cut -d' ' -f1)
-          SHA_DARWIN_ARM=$(sha256sum names-darwin-arm.tar.gz | cut -d' ' -f1)
-          SHA_LINUX=$(sha256sum names-linux.tar.gz | cut -d' ' -f1)
+          SHA_DARWIN=$(sha256sum inames-darwin.tar.gz | cut -d' ' -f1)
+          SHA_DARWIN_ARM=$(sha256sum inames-darwin-arm.tar.gz | cut -d' ' -f1)
+          SHA_LINUX=$(sha256sum inames-linux.tar.gz | cut -d' ' -f1)
           
           # Create formula file
-          cat > names.rb << EOF
-          class Names < Formula
-            desc "Multicultural random name generator with Persian, Arabic, and Asian names"
+          cat > inames.rb << EOF
+          class Inames < Formula
+            desc "Inclusive multicultural random name generator with Persian, Arabic, and Asian names"
             homepage "https://github.com/${{ github.repository }}"
             version "${VERSION}"
             license any_of: ["MIT", "Apache-2.0"]
           
             on_macos do
               if Hardware::CPU.arm?
-                url "https://github.com/${{ github.repository }}/releases/download/v${VERSION}/names-v${VERSION}-aarch64-apple-darwin.tar.gz"
+                url "https://github.com/${{ github.repository }}/releases/download/v${VERSION}/inames-v${VERSION}-aarch64-apple-darwin.tar.gz"
                 sha256 "${SHA_DARWIN_ARM}"
               else
-                url "https://github.com/${{ github.repository }}/releases/download/v${VERSION}/names-v${VERSION}-x86_64-apple-darwin.tar.gz"
+                url "https://github.com/${{ github.repository }}/releases/download/v${VERSION}/inames-v${VERSION}-x86_64-apple-darwin.tar.gz"
                 sha256 "${SHA_DARWIN}"
               end
             end
           
             on_linux do
-              url "https://github.com/${{ github.repository }}/releases/download/v${VERSION}/names-v${VERSION}-x86_64-unknown-linux-gnu.tar.gz"
+              url "https://github.com/${{ github.repository }}/releases/download/v${VERSION}/inames-v${VERSION}-x86_64-unknown-linux-gnu.tar.gz"
               sha256 "${SHA_LINUX}"
             end
           
             def install
-              bin.install "names"
+              bin.install "inames"
             end
           
             test do
-              assert_match(/\w+-\w+/, shell_output("#{bin}/names"))
+              assert_match(/\w+-\w+/, shell_output("#{bin}/inames"))
             end
           end
           EOF

@@ -15,4 +15,4 @@ RUN mkdir src && echo 'fn main() {}' > src/main.rs && \
 COPY . .
 RUN cargo build --release
 
-CMD ["./target/release/names"] 
+CMD ["./target/release/inames"] 

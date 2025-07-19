@@ -74,8 +74,8 @@ mod tests {
 
     #[test]
     fn test_default_generator() {
-        let mut gen = Generator::default();
-        let name = gen.next().unwrap();
+        let mut generator = Generator::default();
+        let name = generator.next().unwrap();
         assert!(name.contains('-'));
         let parts: Vec<&str> = name.split('-').collect();
         assert_eq!(parts.len(), 2);
@@ -83,8 +83,8 @@ mod tests {
 
     #[test]
     fn test_numbered_generator() {
-        let mut gen = Generator::with_naming(Name::Numbered);
-        let name = gen.next().unwrap();
+        let mut generator = Generator::with_naming(Name::Numbered);
+        let name = generator.next().unwrap();
         let parts: Vec<&str> = name.split('-').collect();
         assert_eq!(parts.len(), 3);
         assert_eq!(parts[2].len(), 4);
@@ -95,8 +95,8 @@ mod tests {
     fn test_custom_lists() {
         let adjectives = &["test"];
         let nouns = &["name"];
-        let mut gen = Generator::new(adjectives, nouns, Name::Plain);
-        let name = gen.next().unwrap();
+        let mut generator = Generator::new(adjectives, nouns, Name::Plain);
+        let name = generator.next().unwrap();
         assert_eq!(name, "test-name");
     }
 }

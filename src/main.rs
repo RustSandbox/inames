@@ -1,12 +1,12 @@
 use clap::Parser;
-use names::{Generator, Name};
+use inames::{Generator, Name};
 
-/// Multicultural random name generator
+/// iNames - Inclusive multicultural random name generator
 ///
 /// Generates random names using Persian, Arabic, and Asian names written in Latin characters.
 /// Examples: "aziz-hamze", "sakura-krishna", "rumi-chen-1234"
 #[derive(Parser)]
-#[command(name = "names", version, about, long_about = None)]
+#[command(name = "inames", version, about, long_about = None)]
 struct Cli {
     /// Add a random 4-digit number to the generated name
     #[arg(short, long)]

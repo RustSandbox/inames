@@ -1,10 +1,10 @@
-# Multicultural Names Generator
+# iNames - Inclusive Multicultural Names Generator
 
-[![CI](https://github.com/hamzeghalebi/names/actions/workflows/ci.yml/badge.svg)](https://github.com/hamzeghalebi/names/actions/workflows/ci.yml)
-[![Crates.io](https://img.shields.io/crates/v/names.svg)](https://crates.io/crates/names)
+[![CI](https://github.com/hamzeghalebi/inames/actions/workflows/ci.yml/badge.svg)](https://github.com/hamzeghalebi/inames/actions/workflows/ci.yml)
+[![Crates.io](https://img.shields.io/crates/v/inames.svg)](https://crates.io/crates/inames)
 [![License](https://img.shields.io/badge/license-MIT%2FApache--2.0-blue.svg)](LICENSE-MIT)
 
-A random name generator for Rust that creates unique names using Persian, Arabic, and Asian names written in Latin characters. 
+An inclusive random name generator for Rust that creates unique names using Persian, Arabic, and Asian names written in Latin characters. 
 
 Inspired by [fnichol/names](https://github.com/fnichol/names), this project extends the concept to include multicultural names from around the world, making it more inclusive and diverse while maintaining the same simple and effective API.
 
@@ -34,24 +34,24 @@ dalil-fatima-8472
 
 ```bash
 brew tap hamzeghalebi/tap
-brew install names
+brew install inames
 ```
 
 ### Using Cargo
 
 ```bash
-cargo install names
+cargo install inames
 ```
 
 ### Pre-built Binaries
 
-Download pre-built binaries from the [releases page](https://github.com/hamzeghalebi/names/releases).
+Download pre-built binaries from the [releases page](https://github.com/hamzeghalebi/inames/releases).
 
 ### From Source
 
 ```bash
-git clone https://github.com/hamzeghalebi/names.git
-cd names
+git clone https://github.com/hamzeghalebi/inames.git
+cd inames
 cargo build --release
 cargo install --path .
 ```
@@ -62,24 +62,24 @@ cargo install --path .
 
 Generate a single name:
 ```bash
-names
+inames
 ```
 
 Generate multiple names:
 ```bash
-names --amount 5
+inames --amount 5
 ```
 
 Generate names with numbers:
 ```bash
-names --number
-names --number --amount 10
+inames --number
+inames --number --amount 10
 ```
 
 ### As a Library
 
 ```rust
-use names::{Generator, Name};
+use inames::{Generator, Name};
 
 fn main() {
     // Default generator
@@ -109,6 +109,10 @@ The name lists include carefully selected names from:
 - Buddhist/Sanskrit terms
 
 All names are respectfully chosen and transliterated to be easily readable in Latin characters.
+
+## Why This Matters
+
+Read the essay ["The Names We Choose"](ESSAY.md) for thoughts on why multicultural naming in programming is more important than it might seem.
 
 ## Development
 

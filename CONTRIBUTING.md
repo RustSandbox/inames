@@ -1,6 +1,6 @@
-# Contributing to Multicultural Names Generator
+# Contributing to iNames - Inclusive Multicultural Names Generator
 
-Thank you for your interest in contributing to the Multicultural Names Generator! We welcome contributions that help make our name collection more diverse and inclusive.
+Thank you for your interest in contributing to iNames! We welcome contributions that help make our name collection more diverse and inclusive.
 
 ## How to Contribute
 
@@ -48,8 +48,8 @@ We especially welcome contributions that add names from cultures not yet well-re
 
 ```bash
 # Clone the repo
-git clone https://github.com/hamzeghalebi/names.git
-cd names
+git clone https://github.com/hamzeghalebi/inames.git
+cd inames
 
 # Build the project
 cargo build

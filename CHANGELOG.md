@@ -8,7 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
-- Initial release of multicultural names generator
+- Initial release of iNames - inclusive multicultural names generator
 - Support for Persian/Iranian names
 - Support for Arabic names (with Latin transliteration)
 - Support for East Asian names (Chinese, Japanese)
@@ -22,7 +22,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Homebrew formula generation
 
 ### Changed
-- Extended the concept from [fnichol/names](https://github.com/fnichol/names) to be more multicultural and inclusive
+- Extended the concept from [fnichol/names](https://github.com/fnichol/names) to be more multicultural and inclusive as iNames
 
 ## [0.1.0] - TBD
 - Initial release
